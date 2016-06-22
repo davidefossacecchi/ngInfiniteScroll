@@ -11,6 +11,7 @@ mod.directive 'infiniteScroll', [
       scrollDistance = undefined
       scrollEnabled = undefined
       $window = angular.element($window)
+      $document = angular.element(document)
       scrollDistance = 0
       if attrs.infiniteScrollDistance != null
         scope.$watch attrs.infiniteScrollDistance, (value) ->
@@ -29,11 +30,9 @@ mod.directive 'infiniteScroll', [
         elementBottom = undefined
         remaining = undefined
         shouldScroll = undefined
-        windowBottom = undefined
-        #windowBottom = $window.height() + $window.scrollTop();
         elementBottom = elem.offset().top + elem.height()
         #remaining = elementBottom - windowBottom;
-        shouldScroll = $window.scrollTop() >= elementBottom - (elementBottom * scrollDistance * 0.1)
+        shouldScroll = (scrollDistance * 0.1) >= (1 - ( $window.scrollTop() / ( $document.height() - $window.height() ) ) )
         if shouldScroll and scrollEnabled
           if $rootScope.$$phase
             return scope.$eval(attrs.infiniteScroll)
